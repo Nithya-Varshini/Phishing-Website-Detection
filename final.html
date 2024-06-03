@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Phishing Check</title>
+</head>
+<body>
+    <h1>URL Phishing Check</h1>
+    <input type="text" id="urlInput" placeholder="Enter URL">
+    <button onclick="checkPhishing()">Check</button>
+    <div id="result"></div>
+
+    <script>
+        function checkPhishing() {
+            var url1 = document.getElementById("urlInput").value;
+            fetch('http://127.0.0.1:5000/detect-phishing', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({"url": url1})
+            })
+            .then(response => response.json())
+            .then(data => {
+                var resultDiv = document.getElementById("result");
+                if (data.hasOwnProperty("unsafe")) {
+                    resultDiv.innerHTML = "Unsafe: " + data.unsafe;
+                } else {
+                    resultDiv.innerHTML = "No information available";
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                var resultDiv = document.getElementById("result");
+                resultDiv.innerHTML = "An error occurred while checking the URL.";
+            });
+        }
+    </script>
+</body>
+</html>
